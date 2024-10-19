@@ -5,16 +5,17 @@ apt-get update
 
 # get software
 apt-get install \
-	unclutter \
+    unclutter \
     xorg \
-    chromium \
-    openbox \
+    midori \
+    matchbox \
     lightdm \
     locales \
     -y
 
 # dir
-mkdir -p /home/kiosk/.config/openbox
+#mkdir -p /home/kiosk/.config/openbox
+mkdir -p /home/kiosk/.matchbox
 
 # create group
 groupadd kiosk
@@ -42,32 +43,22 @@ fi
 cat > /etc/lightdm/lightdm.conf << EOF
 [SeatDefaults]
 autologin-user=kiosk
-user-session=openbox
+user-session=matchbox
 EOF
 
 # create autostart
-if [ -e "/home/kiosk/.config/openbox/autostart" ]; then
-  mv /home/kiosk/.config/openbox/autostart /home/kiosk/.config/openbox/autostart.backup
+if [ -e "/home/kiosk/.matchbox/session" ]; then
+  mv /home/kiosk/.matchbox/session /home/kiosk/.matchbox/session.backup
 fi
-cat > /home/kiosk/.config/openbox/autostart << EOF
+cat > /home/kiosk/.matchbox/session << EOF
 #!/bin/bash
 
-unclutter -idle 0.1 -grab -root &
+#unclutter -idle 0.1 -grab -root &
 
 while :
 do
   xrandr --auto
-  chromium \
-    --no-first-run \
-    --start-maximized \
-    --disable \
-    --disable-translate \
-    --disable-infobars \
-    --disable-suggestions-service \
-    --disable-save-password-bubble \
-    --disable-session-crashed-bubble \
-    --incognito \
-    --kiosk "https://neave.tv/"
+  midori -e Fullscreen -a https://openweathermap.org/city/2657896
   sleep 5
 done &
 EOF
