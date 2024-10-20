@@ -5,9 +5,9 @@ apt-get update
 
 # get software
 apt-get install \
-	unclutter \
+    unclutter \
     xorg \
-    chromium \
+    firefox \
     openbox \
     lightdm \
     locales \
@@ -52,22 +52,27 @@ fi
 cat > /home/kiosk/.config/openbox/autostart << EOF
 #!/bin/bash
 
+xset -dpms # disable DPMS (Energy Star) features.
+xset s off # disable screen saver
+xset s noblank # don't blank the video device
+
 unclutter -idle 0.1 -grab -root &
 
 while :
 do
   xrandr --auto
-  chromium \
-    --no-first-run \
-    --start-maximized \
-    --disable \
-    --disable-translate \
-    --disable-infobars \
-    --disable-suggestions-service \
-    --disable-save-password-bubble \
-    --disable-session-crashed-bubble \
-    --incognito \
-    --kiosk "https://openweathermap.org/city/2657896"
+  firefox --kiosk "https://openweathermap.org/city/2657896"
+#  chromium \
+#    --no-first-run \
+#    --start-maximized \
+#    --disable \
+#    --disable-translate \
+#    --disable-infobars \
+#    --disable-suggestions-service \
+#    --disable-save-password-bubble \
+#    --disable-session-crashed-bubble \
+#    --incognito \
+#    --kiosk "https://openweathermap.org/city/2657896"
   sleep 5
 done &
 EOF
